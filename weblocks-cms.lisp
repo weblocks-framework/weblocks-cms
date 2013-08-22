@@ -22,15 +22,15 @@
                                 (string-downcase (slot-value item 'name)))
                       :writer (lambda (value item)
                                 (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value)))))
-                (type :present-as (radio :choices '(("Выбор да/нет" . boolean)
-                                                    ("Целое число" . integer) 
-                                                    ("Строка" . string)
-                                                    ("Несколько строк текста" . textarea)
-                                                    ("Редактор текста" . editor-textarea)
-                                                    ("Дата и время" . datetime)
-                                                    ("Единичный выбор" . single-choice)
-                                                    ("Множественный выбор" . multiple-choices)
-                                                    ("Файл" . file)))
+                (type :present-as (radio :choices '(("Choice yes/no" . boolean)
+                                                    ("Integer" . integer) 
+                                                    ("String" . string)
+                                                    ("Few lines of text" . textarea)
+                                                    ("Text editor" . editor-textarea)
+                                                    ("Date and time" . datetime)
+                                                    ("Single choice" . single-choice)
+                                                    ("Multiple choices" . multiple-choices)
+                                                    ("File" . file)))
                       :reader (lambda (item)
                                 (string-downcase (slot-value item 'type))) 
                       :writer (lambda (value item)
@@ -57,7 +57,7 @@
     (do-page 
       (make-navigation 
         "toplevel"
-        (list "Модели" 
+        (list "Models" 
               (make-instance 
                 'gridedit 
                 :data-class 'model-description 
@@ -68,12 +68,12 @@
                                          (string-downcase (slot-value item 'name)))
                                :writer (lambda (value item)
                                          (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value))))))) nil)
-        (list "Поля моделей"
+        (list "Models Fields"
               (make-instance 
                 'gridedit 
                 :data-class 'field-description 
                 :item-form-view 'field-form-view) "fields")
-        (list "Предпросмотр форм моделей"
+        (list "Preview Models"
               (lambda (&rest args)
                 (save-schema)
                 (setf *current-schema* (read-schema))
