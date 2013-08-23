@@ -1,7 +1,10 @@
 ;;;; package.lisp
 
 (defpackage #:weblocks-cms
-  (:use #:cl #:weblocks #:weblocks-utils #:weblocks-twitter-bootstrap-application)
+  (:use #:cl #:weblocks #:weblocks-utils 
+        #:weblocks-twitter-bootstrap-application 
+        #:weblocks-ajax-file-upload-presentation 
+        #:weblocks-bootstrap-date-entry-presentation )
   (:export 
     #:weblocks-cms 
     #:model-description 

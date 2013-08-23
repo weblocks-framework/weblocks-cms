@@ -19,13 +19,12 @@
                                                   (field form-view-field) (view form-view) widget obj
                                                   &rest args)
   (declare (special weblocks:*presentation-dom-id*))
-  (weblocks-utils:require-assets "https://raw.github.com/html/weblocks-assets/master/jquery/tinymce/4.0.4/")
+  (weblocks-utils:require-assets "https://raw.github.com/html/weblocks-assets/master/tinymce/4.0.4/")
   (with-javascript
     (ps:ps*
-      `(with-scripts 
-         (ps:LISP (weblocks-utils:prepend-webapp-path "/tinymce/tinymce.min.js"))
-         (lambda () 
-           (setf tiny-M-C-E.base-u-r-l (ps:LISP (weblocks-utils:prepend-webapp-path "/tinymce")))
-           (tiny-M-C-E.init 
-             (eval ,(format nil *tinymce-settings* weblocks:*presentation-dom-id*)))))))
+      `(tinymce.init 
+         (eval ,(remove #\Newline (format nil *tinymce-settings* weblocks:*presentation-dom-id*))))))
   (call-next-method))
+
+(defmethod dependencies append ((obj tinymce-textarea-presentation))
+  (list (make-instance 'script-dependency :url (weblocks-utils:prepend-webapp-path "/tinymce/tinymce.js"))))
