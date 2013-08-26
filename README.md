@@ -44,10 +44,9 @@ By default you can edit schema (on /super-admin) without authentication, to rest
 
 ## Turning Models Into Edit Interface
 
-### Gridedit
-
 Here is example of embedding generated models into your admin interface
 
+```lisp
 (do-page 
   (apply 
     #'make-navigation 
@@ -60,8 +59,12 @@ Here is example of embedding generated models into your admin interface
            nil))
        (weblocks-cms:models-gridedit-widgets-for-navigation)
        (list :navigation-class 'bootstrap-navbar-navigation))))
+```
 
 The result is separate tab for every generated model and gridedit on every tab.
+
+### Gridedit
+
 You can also use `(weblocks-cms:make-gridedit-for-model-description < model description >)` to put grid where you want.
 
 ### Tree Edit
