@@ -22,9 +22,11 @@
   (weblocks-utils:require-assets "https://raw.github.com/html/weblocks-assets/master/tinymce/4.0.4/")
   (with-javascript
     (ps:ps*
-      `(tinymce.init 
-         (eval ,(remove #\Newline (format nil *tinymce-settings* weblocks:*presentation-dom-id*))))))
+      `(with-scripts 
+         (ps:LISP (weblocks-utils:prepend-webapp-path "/tinymce/tinymce.js"))
+         (lambda ()
+           (setf tinymce.base-u-r-l (ps:LISP (weblocks-utils:prepend-webapp-path "/tinymce/")))
+           (setf window.tinymce.dom.-event.dom-loaded t)
+           (tinymce.init 
+             (eval ,(remove #\Newline (format nil *tinymce-settings* weblocks:*presentation-dom-id*))))))))
   (call-next-method))
-
-(defmethod dependencies append ((obj tinymce-textarea-presentation))
-  (list (make-instance 'script-dependency :url (weblocks-utils:prepend-webapp-path "/tinymce/tinymce.js"))))
