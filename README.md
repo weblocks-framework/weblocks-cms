@@ -10,7 +10,7 @@ First you edit application data schema - a set of models and their fields and in
 For schema editing we starting weblocks-cms application along with our admin application.
 weblocks-cms will be available on /super-admin url.
 
-_We edit schema in web-interface_
+_We edit schema in web-interface._
 _Schema is usually saved in `< getcwd >/schema.lisp-expr` file after clicking "Preview Models" button_
 Current schema is the one from which admin interface is generated.
 It is in `weblocks-cms:*current-schema*` variable and is updated when `(weblocks-cms:refresh-schema)` evaluated 
