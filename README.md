@@ -1,8 +1,8 @@
-# Weblocks CMS - CMS built with weblocks.
+# Weblocks CMS - CMS built with Weblocks.
 
 ## The Idea 
 
-The idea of weblocks-cms is to have an admin interface on the top of normal admin interface.
+The idea of *Weblocks CMS* is to have an admin interface on the top of normal admin interface.
 First you edit application data schema - a set of models and their fields and include somewhere code which will create UI from this schema.
 
 ## Starting Weblocks CMS
@@ -16,7 +16,7 @@ Current schema is the one from which admin interface is generated.
 It is in `weblocks-cms:*current-schema*` variable and is updated when `(weblocks-cms:refresh-schema)` evaluated 
 and during application loading.
 
-First Weblocks CMS start (without schema) does not require initialization but when schema contains models 
+First *Weblocks CMS* start (without schema) does not require initialization but when schema contains models 
 and data related to these models you'll need initialization.
 
 ## Weblocks CMS Initialization
