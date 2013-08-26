@@ -13,8 +13,6 @@
            :ignore-default-dependencies nil ;; accept the defaults
            :debug t)
 
-(defvar *models-package*)
-
 (eval `(defview field-form-view (:type form :inherit-from '(:scaffold field-description))
                 (title :requiredp t)
                 (name :requiredp t 
@@ -47,6 +45,15 @@
                      ,@(unless display-buttons (list :buttons nil)))
                 ,@(loop for j in (getf description :fields) 
                         append (get-view-fields-for-field-description j description))))))
+
+(defun get-model-table-view (model)
+  (let ((description (get-model-description model)))
+    (eval 
+      `(defview nil (:type table 
+                     :caption ,(getf description :title)
+                     :inherit-from ',(list :scaffold (keyword->symbol (getf description :name))))
+                ,@(loop for j in (getf description :fields) 
+                        append (get-table-view-fields-for-field-description j description))))))
 
 (defun weblocks-cms-access-granted ()
   "Override this function for using login logic"
@@ -85,12 +92,6 @@
               "forms-preview")
         :navigation-class 'bootstrap-navbar-navigation))))
 
-(defun reverse-cons (cons)
-  (cons (cdr cons) (car cons)))
-
-(defun keyword->symbol (keyword)
-  (intern (string-upcase keyword) *models-package*))
-
 (defun regenerate-model-classes (&optional (schema *current-schema*))
   (loop for i in schema do
         (eval
@@ -108,11 +109,6 @@
                            (list :type (getf j :type)))
                           (t nil)))))))))
 
-(defun safe-parse-integer (number)
-  (if (not number)
-    0
-    (parse-integer number :junk-allowed t)))
-
 (defparameter *upload-directory* 
   (merge-pathnames 
     (make-pathname :directory '(:relative "pub" "upload"))
@@ -127,82 +123,12 @@
                                (string-downcase (getf field-description :name)))))
     *upload-directory*))
 
-(defgeneric get-view-fields-for-field-type-and-description (type description model-description-list)
-  (:documentation "Get view fields for specific field")
-  (:method ((type (eql :integer)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'input 
-       :writer (lambda (value item)
-                 (setf (slot-value item (keyword->symbol (getf description :name)))
-                       (safe-parse-integer value)))
-       :reader (lambda (item)
-                 (slot-value item (keyword->symbol (getf description :name)))))))
-  (:method ((type (eql :string)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'input)))
-  (:method ((type (eql :boolean)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'checkbox)))
-  (:method ((type (eql :datetime)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'bootstrap-date-entry
-       :parse-as 'bootstrap-date)))
-  (:method ((type (eql :multiple-choices)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as (list 
-                     'checkboxes 
-                     :choices (lambda (&rest args)
-                                (mapcar #'string-upcase (explode (string #\Newline) (getf description :options)))))
-       :parse-as 'checkboxes)))
-  (:method ((type (eql :single-choice)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as (list 'radio :choices 
-                         (lambda (&rest args)
-                           (mapcar #'string-upcase (explode (string #\Newline) (getf description :options))))))))
-  (:method ((type (eql :textarea)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'textarea)))
-  (:method ((type (eql :file)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'ajax-file-upload
-       :parse-as (list 'ajax-file-upload 
-                       :upload-directory (get-field-upload-directory model-description-list description))
-       :writer (lambda (value item)
-                 (when value 
-                   (setf (slot-value item (keyword->symbol (getf description :name))) value))))))
-  (:method ((type (eql :editor-textarea)) description model-description-list)
-   (list 
-     (list 
-       (keyword->symbol (getf description :name))
-       :label (getf description :title)
-       :present-as 'tinymce-textarea))))
 
 (defun get-view-fields-for-field-description (i model-description-list)
   (get-view-fields-for-field-type-and-description (getf i :type) i model-description-list))
+
+(defun get-table-view-fields-for-field-description (i model-description-list)
+  (get-table-view-fields-for-field-type-and-description (getf i :type) i model-description-list))
 
 (defun models-gridedit-widgets-for-navigation ()
   (loop for i in (dump-schema) collect 
@@ -211,5 +137,6 @@
           (make-instance 
             'gridedit 
             :data-class (keyword->symbol (getf i :name))
-            :item-form-view (get-model-form-view (getf i :name)))
+            :item-form-view (get-model-form-view (getf i :name))
+            :view (get-model-table-view (getf i :name)))
           (string-downcase (getf i :name)))))
