@@ -1,5 +1,19 @@
 (in-package :weblocks-cms)
 
+(defparameter *upload-directory* 
+  (merge-pathnames 
+    (make-pathname :directory '(:relative "pub" "upload"))
+    (uiop:getcwd)))
+
+(defun get-field-upload-directory (model-description-list field-description)
+  (merge-pathnames 
+    (make-pathname 
+      :directory (list :relative 
+                       (format nil "~A-~A" 
+                               (string-downcase (getf model-description-list :name))
+                               (string-downcase (getf field-description :name)))))
+    *upload-directory*))
+
 (defgeneric get-view-fields-for-field-type-and-description (type description model-description-list)
   (:documentation "Get view fields for specific field")
   (:method ((type (eql :integer)) description model-description-list)
@@ -76,4 +90,10 @@
      (list 
        (keyword->symbol (getf description :name))
        :label (getf description :title)
-       :present-as 'tinymce-textarea))))
+       :present-as 'tinymce-textarea)))
+  (:method ((type (eql :single-relation)) description model-description-list)
+   (list 
+     (list 
+       (keyword->symbol (getf description :name))
+       :hidep t
+       :label (getf description :title)))))

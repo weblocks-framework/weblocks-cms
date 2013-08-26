@@ -35,6 +35,6 @@
 (defvar *current-schema* (read-schema))
 
 (defun get-model-description (model)
-  (loop for i in (dump-schema) do 
+  (loop for i in *current-schema* do 
         (when (equal model (getf i :name))
           (return-from get-model-description i))))
