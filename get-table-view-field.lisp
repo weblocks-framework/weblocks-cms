@@ -77,6 +77,7 @@
                  (list 
                    (list 
                      (keyword->symbol (getf description :name))
+                     :label (getf description :title)
                      :present-as 'text
                      :reader (if (description-of-a-tree-p relation-model-description-list)
                                (lambda (item)

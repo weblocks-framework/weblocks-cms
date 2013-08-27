@@ -103,6 +103,7 @@
          (relation-model-description-list 
            (list 
              (keyword->symbol (getf description :name))
+             :label (getf description :title)
              :present-as (list 
                            'bootstrap-typeahead 
                            :display-create-message nil
