@@ -37,6 +37,10 @@
               (make-instance 
                 'gridedit 
                 :data-class 'model-description 
+                :view (defview nil (:type table :inherit-from '(:scaffold model-description))
+                               (name :present-as text 
+                                     :reader (lambda (item)
+                                               (string-downcase (model-description-name item)))))
                 :item-form-view 
                 (defview nil (:type form :inherit-from '(:scaffold model-description))
                          (name :requiredp t 
@@ -48,6 +52,12 @@
               (make-instance 
                 'gridedit 
                 :data-class 'field-description 
+                :view (defview nil (:type table :inherit-from '(:scaffold field-description))
+                               (model :present-as text 
+                                      :reader (lambda (item)
+                                                (format nil "~A (~A)" 
+                                                        (model-description-title (field-description-model item))
+                                                        (string-downcase (model-description-name (field-description-model item)))))))
                 :item-form-view 'field-form-view) "fields")
         (list "Preview Models"
               (lambda (&rest args)
