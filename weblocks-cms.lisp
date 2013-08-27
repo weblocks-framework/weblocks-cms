@@ -19,6 +19,8 @@
       `(defview nil (:type form 
                      :caption ,(getf description :title)
                      :inherit-from ',(list :scaffold (keyword->symbol (getf description :name)))
+                     :enctype "multipart/form-data"
+                     :use-ajax-p t
                      ,@(unless display-buttons (list :buttons nil)))
                 ,@(loop for j in (getf description :fields) 
                         append (get-view-fields-for-field-description j description))))))
