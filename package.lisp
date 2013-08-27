@@ -23,5 +23,6 @@
     #:refresh-schema 
     #:*current-schema* 
     #:make-tree-edit-for-model-description
-    #:make-gridedit-for-model-description))
+    #:make-gridedit-for-model-description 
+    #:bootstrap-typeahead-title))
 

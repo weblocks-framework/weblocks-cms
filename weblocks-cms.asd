@@ -4,7 +4,7 @@
   :description "A CMS for Weblocks"
   :author "Olexiy Zamkoviy <olexiy.z@gmail.com>"
   :license "LLGPL"
-  :version "0.1.1"
+  :version "0.2.0"
   :depends-on (#:weblocks
                #:weblocks-stores
                #:weblocks-utils 
@@ -14,7 +14,10 @@
                #:cxml 
                #:cl-ppcre 
                #:weblocks-tree-widget 
-               #:alexandria)
+               #:alexandria 
+               #:weblocks-bootstrap-typeahead-presentation 
+               #:weblocks-bootstrap-date-entry-presentation 
+               #:weblocks-ajax-file-upload-presentation)
   :components ((:file "package")
                (:file "weblocks-cms" :depends-on ("field-description" "model-description" "package" "tinymce-textarea-presentation" "util" "get-view-field" "get-table-view-field" "super-admin-interface" "tree-edit-model" "tree-edit-widget"))
                (:file "field-description" :depends-on ("package"))

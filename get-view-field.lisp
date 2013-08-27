@@ -14,6 +14,11 @@
                                (string-downcase (getf field-description :name)))))
     *upload-directory*))
 
+(defgeneric bootstrap-typeahead-title (obj)
+  (:documentation "Method which should return unique string which can be used for object finding")
+  (:method ((obj standard-object))
+   (format nil "bootstrap-typeahead-title of ~A with id ~A" (type-of obj) (object-id obj))))
+
 (defgeneric get-view-fields-for-field-type-and-description (type description model-description-list)
   (:documentation "Get view fields for specific field")
   (:method ((type (eql :integer)) description model-description-list)
@@ -92,8 +97,48 @@
        :label (getf description :title)
        :present-as 'tinymce-textarea)))
   (:method ((type (eql :single-relation)) description model-description-list)
-   (list 
+   (let ((relation-model-description-list (get-model-description-from-field-description-options description)))
      (list 
-       (keyword->symbol (getf description :name))
-       :hidep t
-       :label (getf description :title)))))
+       (cond 
+         (relation-model-description-list 
+           (list 
+             (keyword->symbol (getf description :name))
+             :present-as (list 
+                           'bootstrap-typeahead 
+                           :display-create-message nil
+                           :choices 
+                           (if (description-of-a-tree-p relation-model-description-list)
+                             (lambda (item)
+                               (mapcar #'cdr (tree-item-text-tree (keyword->symbol (getf relation-model-description-list :name)) nil)))
+                             (lambda (item)
+                               (mapcar #'bootstrap-typeahead-title (all-of (keyword->symbol (getf relation-model-description-list :name)))))))
+             :reader (if (description-of-a-tree-p relation-model-description-list)
+                       (lambda (item)
+                         (let ((item (slot-value item (keyword->symbol (getf description :name)))))
+                           (and 
+                             item
+                             (tree-path-pretty-print item))))
+                       (lambda (item)
+                         (let ((item (slot-value item (keyword->symbol (getf description :name)))))
+                           (and 
+                             item
+                             (bootstrap-typeahead-title item)))))
+             :writer (if (description-of-a-tree-p relation-model-description-list)
+                       (lambda (value item)
+                         (setf 
+                           (slot-value item (keyword->symbol (getf description :name)))
+                           (parse-tree-item-from-text 
+                             (keyword->symbol (getf relation-model-description-list :name))
+                             value)))
+                       (lambda (value item)
+                         (setf 
+                           (slot-value item (keyword->symbol (getf description :name)))
+                           (first-by 
+                             (keyword->symbol (getf relation-model-description-list :name))
+                             (lambda (item) 
+                               (string= (bootstrap-typeahead-title item) value))))))))
+         (t 
+          (list 
+            (keyword->symbol (getf description :name))
+            :hidep t
+            :label (getf description :title))))))))

@@ -39,6 +39,7 @@
                 :data-class 'model-description 
                 :view (defview nil (:type table :inherit-from '(:scaffold model-description))
                                (name :present-as text 
+                                     :allow-sorting-p t
                                      :reader (lambda (item)
                                                (string-downcase (model-description-name item)))))
                 :item-form-view 

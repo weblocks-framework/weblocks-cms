@@ -38,3 +38,10 @@
   (loop for i in *current-schema* do 
         (when (equal model (getf i :name))
           (return-from get-model-description i))))
+
+(defun get-model-description-from-field-description-options (description)
+  (get-model-description 
+    (alexandria:make-keyword 
+      (string-upcase 
+        (string-trim (format nil " ~A~A" #\Newline #\Return)
+                     (getf description :options))))))
