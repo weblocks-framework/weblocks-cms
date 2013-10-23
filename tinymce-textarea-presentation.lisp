@@ -2,6 +2,11 @@
 
 (defparameter *tinymce-settings* 
   "({
+        setup: function (ed){
+            ed.on('change', function(){
+                  tinymce.triggerSave();
+            });
+        },
         mode : \"exact\",
         elements : '~A',
         plugins: [

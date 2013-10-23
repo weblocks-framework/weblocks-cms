@@ -69,7 +69,9 @@
        :present-as 'excerpt
        :allow-sorting-p t
        :reader (lambda (item)
-                 (strip-tags (slot-value item (keyword->symbol (getf description :name))))))))
+                 (let ((slot-val (slot-value item (keyword->symbol (getf description :name)))))
+                   (when slot-val 
+                     (strip-tags slot-val)))))))
   (:method ((type (eql :single-relation)) description model-description-list)
            (let ((relation-model-description-list (get-model-description-from-field-description-options description)))
              (cond 
