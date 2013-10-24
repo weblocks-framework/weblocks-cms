@@ -72,7 +72,9 @@
                            (loop for i in (explode (string #\Newline) (getf description :options)) 
                                  collect (cons i (attributize-name (string-trim (format nil " ~A" #\Return) i))))))
        :writer (lambda (value item)
-                 (setf (slot-value item (keyword->symbol (getf description :name))) (alexandria:make-keyword (string-upcase value)))))))
+                 (setf (slot-value item (keyword->symbol (getf description :name)))
+                       (when value
+                         (alexandria:make-keyword (string-upcase value))))))))
   (:method ((type (eql :textarea)) description model-description-list)
    (list 
      (list 
