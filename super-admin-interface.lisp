@@ -28,6 +28,16 @@
   "Override this function for using login logic"
   t)
 
+(defmacro with-yaclml (&body body)
+  "A wrapper around cl-yaclml with-yaclml-stream macro."
+  `(yaclml:with-yaclml-stream *weblocks-output-stream*
+     ,@body))
+
+(defmacro allow-any-attributes-for-tag (tag)
+  `(yaclml::def-simple-xtag ,tag))
+
+(allow-any-attributes-for-tag <:button)
+
 (defun/cc init-super-admin-session (root)
   (when (weblocks-cms-access-granted)
     (do-page 
@@ -66,6 +76,11 @@
                 (setf *current-schema* (read-schema))
 
                 (regenerate-model-classes)
+                (with-yaclml 
+                  (<div :class "alert"
+                        (<button :type "button" :class "close" :data-dismiss "alert" 
+                                 (<:as-is "&times;"))
+                        (<:as-is (weblocks-util:translate "Schema file has been regenerated"))))
                 (loop for i in *current-schema* do 
                       (render-widget 
                         (make-quickform (get-model-form-view (getf i :name) :display-buttons nil)))))
