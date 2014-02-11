@@ -22,7 +22,7 @@
          (lambda ()
            (with-styles
              (ps:LISP  (weblocks-utils:prepend-webapp-path "/pub/scripts/codemirror/lib/codemirror.css"))
-             (ps:LISP  "/pub/stylesheets/mustache-mode.css" #+l(weblocks-utils:prepend-webapp-path "/pub/scripts/CodeMirror/lib/codemirror.css"))
+             (ps:LISP  (weblocks-utils:prepend-webapp-path "/pub/stylesheets/mustache-mode.css") #+l(weblocks-utils:prepend-webapp-path "/pub/scripts/CodeMirror/lib/codemirror.css"))
              (lambda ()
                (let ((editor (*code-mirror.from-text-area 
                  (document.get-element-by-id (ps:LISP weblocks:*presentation-dom-id*))
