@@ -10,7 +10,7 @@
   (declare (special weblocks:*presentation-dom-id*))
 
   (weblocks-utils:require-assets "https://raw.github.com/html/weblocks-assets/master/codemirror/3.20/")
-  (weblocks-utils:require-assets "https://raw.github.com/html/weblocks-assets/master/codemirror-mustache-addon/rev-1/")
+  (weblocks-utils:require-assets "https://raw.github.com/html/weblocks-assets/master/codemirror-mustache-addon/rev-2/")
 
   (with-javascript
     (ps:ps*
