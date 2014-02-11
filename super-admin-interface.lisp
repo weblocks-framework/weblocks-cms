@@ -34,7 +34,8 @@
      ,@body))
 
 (defmacro allow-any-attributes-for-tag (tag)
-  `(yaclml::def-simple-xtag ,tag))
+  `(eval-when (:compile-toplevel :load-toplevel :execute)
+     (yaclml::def-simple-xtag ,tag)))
 
 (allow-any-attributes-for-tag <:button)
 

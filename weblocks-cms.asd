@@ -4,7 +4,7 @@
   :description "A CMS for Weblocks"
   :author "Olexiy Zamkoviy <olexiy.z@gmail.com>"
   :license "LLGPL"
-  :version "0.2.6"
+  :version "0.2.7"
   :depends-on (#:weblocks
                #:weblocks-stores
                #:weblocks-utils 
@@ -24,6 +24,7 @@
                (:file "field-description" :depends-on ("package"))
                (:file "model-description" :depends-on ("package" "field-description"))
                (:file "tinymce-textarea-presentation" :depends-on ("package"))
+               (:file "codemirror-presentation" :depends-on ("package"))
                (:file "util" :depends-on ("package"))
                (:file "get-view-field" :depends-on ("package"))
                (:file "get-table-view-field" :depends-on ("package"))

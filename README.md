@@ -97,7 +97,18 @@ You should also override `weblocks-cms:tree-item-title` method for your models, 
 
 * Few lines of text - textarea, turns into string, displays in grid as excerpt
 
-* Text editor       - tinymce editor, turns into string, displays in grid as excerpt from text with stripped html tags
+* Text editor       - tinymce editor, turns into string, displays in grid as excerpt from text with stripped html tags. 
+
+There is also codemirror editor presentation. To make all presentations codemirror editor by default use following code. 
+
+```lisp 
+(defmethod weblocks-cms::get-view-fields-for-field-type-and-description ((type (eql :editor-textarea)) description model-description-list)
+ (list 
+  (list 
+   (weblocks-cms::keyword->symbol (getf description :name))
+   :label (getf description :title)
+   :present-as 'codemirror)))
+```
 
 * Date and time     - date and time using Twitter Bootstrap widgets, turns into universal time (integer), displays in grid as date
 
