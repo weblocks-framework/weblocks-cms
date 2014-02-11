@@ -24,7 +24,7 @@
       (get-node-text 
         (chtml:parse text (cxml-dom:make-dom-builder))))))
 
-(defvar *models-package*)
+(defvar *models-package* :weblocks-cms)
 
 (defun keyword->symbol (keyword)
   (intern (string-upcase keyword) *models-package*))
