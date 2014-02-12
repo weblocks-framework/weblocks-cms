@@ -3,11 +3,11 @@
 
 (defclass field-description ()
   ((id)
-   (title :accessor field-description-title)
-   (name :accessor field-description-name :type keyword)
-   (type :accessor field-description-type :type keyword)
-   (type-data :accessor field-description-type-data)
-   (model :accessor field-description-model)))
+   (title :initarg :title :accessor field-description-title)
+   (name :initarg :name :accessor field-description-name :type keyword)
+   (type :initarg :type :accessor field-description-type :type keyword)
+   (type-data :initarg :type-data :accessor field-description-type-data)
+   (model :initarg :model :accessor field-description-model)))
 
 (defmethod dump-field-description ((field field-description))
   (list 

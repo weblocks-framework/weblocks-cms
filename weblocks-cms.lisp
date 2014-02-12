@@ -33,23 +33,48 @@
                 ,@(loop for j in (getf description :fields) 
                         append (get-table-view-fields-for-field-description j description))))))
 
-(defun regenerate-model-classes (&optional (schema *current-schema*))
-  (loop for i in schema do
-        (eval
-          `(defclass ,(keyword->symbol (getf i :name)) ()
-             ((,(keyword->symbol :id))
-              ,@(loop for j in (getf i :fields) collect 
-                      (append 
-                        (list 
-                          (keyword->symbol (getf j :name))
+(defun maybe-create-class-db-data (description)
+  "Creates records for class and its fields information if it does not exist"
+  (if weblocks-stores:*default-store*
+    (let ((model-descr 
+            (or (first-by-values 'model-description :name (getf description :name))
+                (persist-object weblocks-stores:*default-store* 
+                                (make-instance 'model-description :name (getf description :name) :title (getf description :title))))))
+      (loop for i in (getf description :fields)
+            do (or (first-by-values 'field-description 
+                                    :model model-descr 
+                                    :name (getf i :name))
+                   (persist-object weblocks-stores:*default-store* (make-instance 'field-description 
+                                                                  :name (getf i :name)
+                                                                  :title (getf i :title)
+                                                                  :type (getf i :type)
+                                                                  :type-data (getf i :type-data)
+                                                                  :model model-descr)))))
+    (warn "Description db data not generated for class ~A, store is not yet opened" (getf description :name))))
 
-                          :initarg (getf j :name)
-                          :initform nil
-                          :accessor (intern (string-upcase (format nil "~A-~A" (getf i :name)  (getf j :name))) *models-package*))
-                        (cond 
-                          ((find (getf i :type) (list :string :integer))
-                           (list :type (getf j :type)))
-                          (t nil)))))))))
+(defun generate-model-class-from-description (i)
+  "Creates CLOS class by schema class description list"
+  (eval
+    `(defclass ,(keyword->symbol (getf i :name)) ()
+       ((,(keyword->symbol :id))
+        ,@(loop for j in (getf i :fields) collect 
+                (append 
+                  (list 
+                    (keyword->symbol (getf j :name))
+
+                    :initarg (getf j :name)
+                    :initform nil
+                    :accessor (intern (string-upcase (format nil "~A-~A" (getf i :name)  (getf j :name))) *models-package*))
+                  (cond 
+                    ((find (getf i :type) (list :string :integer))
+                     (list :type (getf j :type)))
+                    (t nil))))))))
+
+(defun regenerate-model-classes (&optional (schema *current-schema*))
+  "Transforms schema description to classes"
+  (loop for i in schema do
+        (generate-model-class-from-description i)
+        (maybe-create-class-db-data i)))
 
 (defun refresh-schema()
   (setf *current-schema* (read-schema))

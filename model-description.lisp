@@ -2,8 +2,8 @@
 
 (defclass model-description ()
   ((id)
-   (title :accessor model-description-title)
-   (name :accessor model-description-name :type keyword)))
+   (title :initarg :title :accessor model-description-title)
+   (name  :initarg :name :accessor model-description-name :type keyword)))
 
 (defmethod dump-model-description ((model model-description))
   (list :title (model-description-title model)
