@@ -26,7 +26,9 @@
              (lambda ()
                (let ((editor (*code-mirror.from-text-area 
                  (document.get-element-by-id (ps:LISP weblocks:*presentation-dom-id*))
-                 (ps:create :mode "mustache"))))
+                 (ps:create 
+                   :mode "mustache"
+                   "lineWrapping" t))))
                  (ps:chain 
                    editor 
                    (on "change"

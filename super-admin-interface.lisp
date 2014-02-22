@@ -42,48 +42,53 @@
 (defun/cc init-super-admin-session (root)
   (when (weblocks-cms-access-granted)
     (do-page 
-      (make-navigation 
-        "toplevel"
-        (list "Models" 
-              (make-instance 
-                'gridedit 
-                :data-class 'model-description 
-                :view (defview nil (:type table :inherit-from '(:scaffold model-description))
-                               (name :present-as text 
-                                     :allow-sorting-p t
-                                     :reader (lambda (item)
-                                               (string-downcase (model-description-name item)))))
-                :item-form-view 
-                (defview nil (:type form :inherit-from '(:scaffold model-description))
-                         (name :requiredp t 
-                               :reader (lambda (item)
-                                         (string-downcase (slot-value item 'name)))
-                               :writer (lambda (value item)
-                                         (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value))))))) nil)
-        (list "Models Fields"
-              (make-instance 
-                'gridedit 
-                :data-class 'field-description 
-                :view (defview nil (:type table :inherit-from '(:scaffold field-description))
-                               (model :present-as text 
-                                      :reader (lambda (item)
-                                                (format nil "~A (~A)" 
-                                                        (model-description-title (field-description-model item))
-                                                        (string-downcase (model-description-name (field-description-model item)))))))
-                :item-form-view 'field-form-view) "fields")
-        (list "Preview Models"
-              (lambda (&rest args)
-                (save-schema)
-                (setf *current-schema* (read-schema))
+      (make-instance 'composite 
+                     :widgets (list 
+                                (lambda (&rest args)
+                                  (with-yaclml 
+                                    (<br)))
+                                (make-navigation 
+                                  "toplevel"
+                                  (list "Models" 
+                                        (make-instance 
+                                          'gridedit 
+                                          :data-class 'model-description 
+                                          :view (defview nil (:type table :inherit-from '(:scaffold model-description))
+                                                         (name :present-as text 
+                                                               :allow-sorting-p t
+                                                               :reader (lambda (item)
+                                                                         (string-downcase (model-description-name item)))))
+                                          :item-form-view 
+                                          (defview nil (:type form :inherit-from '(:scaffold model-description))
+                                                   (name :requiredp t 
+                                                         :reader (lambda (item)
+                                                                   (string-downcase (slot-value item 'name)))
+                                                         :writer (lambda (value item)
+                                                                   (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value))))))) nil)
+                                  (list "Models Fields"
+                                        (make-instance 
+                                          'gridedit 
+                                          :data-class 'field-description 
+                                          :view (defview nil (:type table :inherit-from '(:scaffold field-description))
+                                                         (model :present-as text 
+                                                                :reader (lambda (item)
+                                                                          (format nil "~A (~A)" 
+                                                                                  (model-description-title (field-description-model item))
+                                                                                  (string-downcase (model-description-name (field-description-model item)))))))
+                                          :item-form-view 'field-form-view) "fields")
+                                  (list "Preview Models"
+                                        (lambda (&rest args)
+                                          (save-schema)
+                                          (setf *current-schema* (read-schema))
 
-                (regenerate-model-classes)
-                (with-yaclml 
-                  (<div :class "alert"
-                        (<button :type "button" :class "close" :data-dismiss "alert" 
-                                 (<:as-is "&times;"))
-                        (<:as-is (weblocks-util:translate "Schema file has been regenerated"))))
-                (loop for i in *current-schema* do 
-                      (render-widget 
-                        (make-quickform (get-model-form-view (getf i :name) :display-buttons nil)))))
-              "forms-preview")
-        :navigation-class 'bootstrap-navbar-navigation))))
+                                          (regenerate-model-classes)
+                                          (with-yaclml 
+                                            (<div :class "alert"
+                                                  (<button :type "button" :class "close" :data-dismiss "alert" 
+                                                           (<:as-is "&times;"))
+                                                  (<:as-is (weblocks-util:translate "Schema file has been regenerated"))))
+                                          (loop for i in *current-schema* do 
+                                                (render-widget 
+                                                  (make-quickform (get-model-form-view (getf i :name) :display-buttons nil)))))
+                                        "forms-preview")
+                                  :navigation-class 'bootstrap-navbar-navigation))))))
