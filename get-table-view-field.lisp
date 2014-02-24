@@ -71,7 +71,9 @@
        :reader (lambda (item)
                  (let ((slot-val (slot-value item (keyword->symbol (getf description :name)))))
                    (when slot-val 
-                     (strip-tags slot-val)))))))
+                     (if (stringp slot-val)
+                       (strip-tags slot-val)
+                       (prin1-to-string slot-val))))))))
   (:method ((type (eql :single-relation)) description model-description-list)
            (let ((relation-model-description-list (get-model-description-from-field-description-options description)))
              (cond 
