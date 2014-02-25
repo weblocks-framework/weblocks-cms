@@ -50,21 +50,40 @@
                                 (make-navigation 
                                   "toplevel"
                                   (list "Models" 
-                                        (make-instance 
-                                          'gridedit 
-                                          :data-class 'model-description 
-                                          :view (defview nil (:type table :inherit-from '(:scaffold model-description))
-                                                         (name :present-as text 
-                                                               :allow-sorting-p t
-                                                               :reader (lambda (item)
-                                                                         (string-downcase (model-description-name item)))))
-                                          :item-form-view 
-                                          (defview nil (:type form :inherit-from '(:scaffold model-description))
-                                                   (name :requiredp t 
-                                                         :reader (lambda (item)
-                                                                   (string-downcase (slot-value item 'name)))
-                                                         :writer (lambda (value item)
-                                                                   (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value))))))) nil)
+                                        (let* ((grid (make-instance 
+                                                       'gridedit 
+                                                       :data-class 'model-description 
+                                                       :view (defview nil (:type table :inherit-from '(:scaffold model-description))
+                                                                      (name :present-as text 
+                                                                            :allow-sorting-p t
+                                                                            :reader (lambda (item)
+                                                                                      (string-downcase (model-description-name item)))))
+                                                       :item-form-view 
+                                                       (defview nil (:type form :inherit-from '(:scaffold model-description))
+                                                                (name :requiredp t 
+                                                                      :reader (lambda (item)
+                                                                                (string-downcase (slot-value item 'name)))
+                                                                      :writer (lambda (value item)
+                                                                                (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value))))))))
+                                               (action-links (lambda (&rest args)
+                                                               (with-yaclml
+                                                                 (<h3 "Actions:")
+                                                                 (<ul 
+                                                                   (<li (render-link 
+                                                                          (lambda (&rest args)
+                                                                            (regenerate-model-classes)
+                                                                            (mark-dirty grid))
+                                                                          "Regenerate db data from schema"))
+                                                                   (<li (render-link 
+                                                                          (lambda (&rest args)
+                                                                            (save-schema)
+                                                                            (setf *current-schema* (read-schema))
+
+                                                                            (regenerate-model-classes)
+                                                                            (mark-dirty grid))
+                                                                          "Save schema to file")))
+                                                                 (<h3 "Model Classes:")))))
+                                          (make-instance 'composite :widgets (list action-links grid))) nil)
                                   (list "Models Fields"
                                         (make-instance 
                                           'gridedit 
@@ -78,15 +97,8 @@
                                           :item-form-view 'field-form-view) "fields")
                                   (list "Preview Models"
                                         (lambda (&rest args)
-                                          (save-schema)
-                                          (setf *current-schema* (read-schema))
-
                                           (regenerate-model-classes)
-                                          (with-yaclml 
-                                            (<div :class "alert"
-                                                  (<button :type "button" :class "close" :data-dismiss "alert" 
-                                                           (<:as-is "&times;"))
-                                                  (<:as-is (weblocks-util:translate "Schema file has been regenerated"))))
+
                                           (loop for i in *current-schema* do 
                                                 (render-widget 
                                                   (make-quickform (get-model-form-view (getf i :name) :display-buttons nil)))))

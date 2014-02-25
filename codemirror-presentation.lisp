@@ -24,16 +24,20 @@
              (ps:LISP  (weblocks-utils:prepend-webapp-path "/pub/scripts/codemirror/lib/codemirror.css"))
              (ps:LISP  (weblocks-utils:prepend-webapp-path "/pub/stylesheets/mustache-mode.css"))
              (lambda ()
-               (let ((editor (*code-mirror.from-text-area 
-                 (document.get-element-by-id (ps:LISP weblocks:*presentation-dom-id*))
-                 (ps:create 
-                   :mode "mustache"
-                   "lineWrapping" t))))
-                 (ps:chain 
-                   editor 
-                   (on "change"
-                       (lambda (cm)
-                         (setf (slot-value 
-                                 (document.get-element-by-id (ps:LISP weblocks:*presentation-dom-id*))
-                                 'value) (ps:chain cm (get-value)))))))))))))
+               (ps:chain 
+                 (j-query (ps:LISP (format nil "#~A" weblocks:*presentation-dom-id*)))
+                 (on-available
+                   (lambda ()
+                     (let ((editor (*code-mirror.from-text-area 
+                                     (document.get-element-by-id (ps:LISP weblocks:*presentation-dom-id*))
+                                     (ps:create 
+                                       :mode "mustache"
+                                       "lineWrapping" t))))
+                       (ps:chain 
+                         editor 
+                         (on "change"
+                             (lambda (cm)
+                               (setf (slot-value 
+                                       (document.get-element-by-id (ps:LISP weblocks:*presentation-dom-id*))
+                                       'value) (ps:chain cm (get-value))))))))))))))))
   (call-next-method))

@@ -13,6 +13,9 @@
            :ignore-default-dependencies nil ;; accept the defaults
            :debug t)
 
+(defvar *additional-schemes* nil 
+  "Additional schemes are not writen to schema file and used by Weblocks CMS plugins")
+
 (defun get-model-form-view (model &key (display-buttons t))
   (let ((description (get-model-description model)))
     (eval 
@@ -44,12 +47,14 @@
             do (or (first-by-values 'field-description 
                                     :model model-descr 
                                     :name (getf i :name))
-                   (persist-object weblocks-stores:*default-store* (make-instance 'field-description 
-                                                                  :name (getf i :name)
-                                                                  :title (getf i :title)
-                                                                  :type (getf i :type)
-                                                                  :type-data (getf i :type-data)
-                                                                  :model model-descr)))))
+                   (persist-object 
+                     weblocks-stores:*default-store* 
+                     (make-instance 'field-description 
+                                    :name (getf i :name)
+                                    :title (getf i :title)
+                                    :type (getf i :type)
+                                    :type-data (getf i :type-data)
+                                    :model model-descr)))))
     (warn "Description db data not generated for class ~A, store is not yet opened" (getf description :name))))
 
 (defun generate-model-class-from-description (i)
@@ -62,7 +67,7 @@
                   (list 
                     (keyword->symbol (getf j :name))
 
-                    :initarg (getf j :name)
+                    :initarg (alexandria:make-keyword (string-upcase (getf j :name)))
                     :initform nil
                     :accessor (intern (string-upcase (format nil "~A-~A" (getf i :name)  (getf j :name))) *models-package*))
                   (cond 
@@ -70,9 +75,12 @@
                      (list :type (getf j :type)))
                     (t nil))))))))
 
+(defun available-schemes-data (&optional (schema *current-schema*))
+  (apply #'append (list* schema (mapcar #'cdr *additional-schemes*))))
+
 (defun regenerate-model-classes (&optional (schema *current-schema*))
   "Transforms schema description to classes"
-  (loop for i in schema do
+  (loop for i in (available-schemes-data schema) do
         (generate-model-class-from-description i)
         (maybe-create-class-db-data i)))
 
@@ -123,7 +131,7 @@
           (return-from description-of-a-tree-p t))))
 
 (defun models-gridedit-widgets-for-navigation ()
-  (loop for i in *current-schema* collect 
+  (loop for i in (available-schemes-data) collect 
         (list 
           (getf i :title)
           (funcall 
@@ -131,3 +139,7 @@
               #'make-tree-edit-for-model-description
               #'make-gridedit-for-model-description) i)
           (string-downcase (getf i :name)))))
+
+(defun def-additional-schema (name schema)
+                       (push (cons name schema) *additional-schemes*)
+                       (mapcar #'generate-model-class-from-description schema))

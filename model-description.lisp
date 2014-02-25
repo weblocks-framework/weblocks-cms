@@ -17,7 +17,13 @@
                         (uiop:getcwd)))
 
 (defun dump-schema ()
-  (mapcar #'dump-model-description (all-of 'model-description)))
+  (let ((disabled-names (loop for i in (apply #'append (mapcar #'cdr weblocks-cms::*additional-schemes*))
+                              collect (getf i :name))))
+    (mapcar #'dump-model-description 
+            (remove-if 
+              (lambda (item)
+                (find (model-description-name item) disabled-names))
+              (all-of 'model-description)))))
 
 (defun save-schema (&optional (file *schema-file*))
   (with-open-file 
@@ -35,7 +41,7 @@
 (defvar *current-schema* (read-schema))
 
 (defun get-model-description (model)
-  (loop for i in *current-schema* do 
+  (loop for i in (available-schemes-data) do 
         (when (equal model (getf i :name))
           (return-from get-model-description i))))
 
