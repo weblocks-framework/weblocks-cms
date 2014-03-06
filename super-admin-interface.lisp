@@ -51,7 +51,7 @@
                                   "toplevel"
                                   (list "Models" 
                                         (let* ((grid (make-instance 
-                                                       'gridedit 
+                                                       'popover-gridedit 
                                                        :data-class 'model-description 
                                                        :view (defview nil (:type table :inherit-from '(:scaffold model-description))
                                                                       (name :present-as text 
@@ -86,7 +86,7 @@
                                           (make-instance 'composite :widgets (list action-links grid))) nil)
                                   (list "Models Fields"
                                         (make-instance 
-                                          'gridedit 
+                                          'popover-gridedit 
                                           :data-class 'field-description 
                                           :view (defview nil (:type table :inherit-from '(:scaffold field-description))
                                                          (model :present-as text 

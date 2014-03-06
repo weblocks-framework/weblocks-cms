@@ -4,7 +4,7 @@
   :description "A CMS for Weblocks"
   :author "Olexiy Zamkoviy <olexiy.z@gmail.com>"
   :license "LLGPL"
-  :version "0.2.15"
+  :version "0.2.16"
   :depends-on (#:weblocks
                #:weblocks-stores
                #:weblocks-utils 
@@ -28,8 +28,9 @@
                (:file "util" :depends-on ("package"))
                (:file "get-view-field" :depends-on ("package"))
                (:file "get-table-view-field" :depends-on ("package"))
-               (:file "super-admin-interface" :depends-on ("field-description" "model-description" "yaclml-syntax-improvement"))
+               (:file "super-admin-interface" :depends-on ("field-description" "model-description" "yaclml-syntax-improvement" "new-page-editable-gridedit"))
                (:file "tree-edit-model" :depends-on ("package"))
                (:file "tree-edit-widget" :depends-on ("package"))
-               (:file "yaclml-syntax-improvement" :depends-on ("package"))))
+               (:file "yaclml-syntax-improvement" :depends-on ("package"))
+               (:file "new-page-editable-gridedit" :depends-on ("package"))))
 

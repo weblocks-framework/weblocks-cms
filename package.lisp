@@ -6,6 +6,7 @@
         #:weblocks-ajax-file-upload-presentation 
         #:weblocks-bootstrap-date-entry-presentation 
         #:weblocks-tree-widget)
+  (:import-from :weblocks-util #:safe-funcall #:translate)
   (:export 
     #:weblocks-cms 
     #:model-description 

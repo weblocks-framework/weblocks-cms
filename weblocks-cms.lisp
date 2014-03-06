@@ -96,7 +96,7 @@
 
 (defun make-gridedit-for-model-description (i)
   (make-instance 
-    'gridedit 
+    'popover-gridedit 
     :data-class (keyword->symbol (getf i :name))
     :item-form-view (get-model-form-view (getf i :name))
     :view (get-model-table-view (getf i :name))))
