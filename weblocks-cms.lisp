@@ -19,7 +19,7 @@
 (defun get-model-form-view (model &key (display-buttons t))
   (let ((description (get-model-description model)))
     (eval 
-      `(defview nil (:type form 
+      `(defview nil (:type form-with-sticky-buttons 
                      :caption ,(getf description :title)
                      :inherit-from ',(list :scaffold (keyword->symbol (getf description :name)))
                      :enctype "multipart/form-data"
