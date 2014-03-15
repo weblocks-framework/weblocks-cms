@@ -4,7 +4,7 @@
   :description "A CMS for Weblocks"
   :author "Olexiy Zamkoviy <olexiy.z@gmail.com>"
   :license "LLGPL"
-  :version "0.2.17"
+  :version (:read-from-file "version.lisp-expr")
   :depends-on (#:weblocks
                #:weblocks-stores
                #:weblocks-utils 

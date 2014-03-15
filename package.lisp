@@ -7,6 +7,7 @@
         #:weblocks-bootstrap-date-entry-presentation 
         #:weblocks-tree-widget)
   (:import-from :weblocks-util #:safe-funcall #:translate)
+  (:import-from :weblocks-twitter-bootstrap-application #:make-navbar-selector)
   (:export 
     #:weblocks-cms 
     #:model-description 

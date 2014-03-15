@@ -47,7 +47,7 @@
                                 (lambda (&rest args)
                                   (with-yaclml 
                                     (<br)))
-                                (make-navigation 
+                                (make-navbar-selector 
                                   "toplevel"
                                   (list "Models" 
                                         (let* ((grid (make-instance 
@@ -102,5 +102,4 @@
                                           (loop for i in *current-schema* do 
                                                 (render-widget 
                                                   (make-quickform (get-model-form-view (getf i :name) :display-buttons nil)))))
-                                        "forms-preview")
-                                  :navigation-class 'bootstrap-navbar-navigation))))))
+                                        "forms-preview")))))))
