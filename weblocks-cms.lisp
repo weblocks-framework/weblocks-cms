@@ -19,12 +19,14 @@
 (defun get-model-form-view (model &key (display-buttons t))
   (let ((description (get-model-description model)))
     (eval 
-      `(defview nil (:type form-with-sticky-buttons 
-                     :caption ,(getf description :title)
-                     :inherit-from ',(list :scaffold (keyword->symbol (getf description :name)))
-                     :enctype "multipart/form-data"
-                     :use-ajax-p t
-                     ,@(unless display-buttons (list :buttons nil)))
+      `(defview nil (:type form-with-refresh-button 
+                           :caption ,(getf description :title)
+                           :inherit-from ',(list :scaffold (keyword->symbol (getf description :name)))
+                           :enctype "multipart/form-data"
+                           :use-ajax-p t
+                           ,@(if display-buttons 
+                               (list :buttons (quote '((:submit . "Save & Close") (:update . "Save & Edit") (:cancel . "Close Without Saving"))))
+                               (list :buttons nil)))
                 ,@(loop for j in (getf description :fields) 
                         append (get-view-fields-for-field-description j description))))))
 

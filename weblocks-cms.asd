@@ -33,5 +33,6 @@
                (:file "tree-edit-widget" :depends-on ("package"))
                (:file "yaclml-syntax-improvement" :depends-on ("package"))
                (:file "new-page-editable-gridedit" :depends-on ("package"))
-               (:file "form-with-sticky-buttons-view" :depends-on ("package"))))
+               (:file "form-with-sticky-buttons-view" :depends-on ("package"))
+               (:file "form-with-refresh-button-view" :depends-on ("package" "form-with-sticky-buttons-view"))))
 
