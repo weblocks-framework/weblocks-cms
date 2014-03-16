@@ -25,7 +25,8 @@
                                (height height)))
                     (start-offset 10))
 
-               (ps:chain (j-query window) 
+               (unless (ps:chain (j-query ".modal-backdrop") length)
+                 (ps:chain (j-query window) 
                          (scroll 
                            (lambda ()
                              (let* ((original-offset (ps:chain wrapper (offset)))
@@ -40,7 +41,7 @@
                                    (ps:chain (j-query "div.submit") (remove-class "fixed"))
                                    ; XXX, this for bug fixing
                                    (setf original-offset (ps:chain (j-query "div.submit") (offset))))))))
-                         (trigger "scroll"))))))))))
+                         (trigger "scroll")))))))))))
 
 (defmethod render-form-view-buttons :before ((view form-with-sticky-buttons-view) obj widget &rest args)
   (make-form-buttons-sticky-js))
