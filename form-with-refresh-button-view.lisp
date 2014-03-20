@@ -51,9 +51,7 @@
                                                       (lambda (&rest args)
                                                         (send-script 
                                                           (ps:ps (alert "Saved successfully")))
-                                                        (update-object-view-from-request (dataform-data widget) view)
-                                                        (firephp:descr (dataform-data widget))
-                                                        )))
+                                                        (update-object-view-from-request (dataform-data widget) view))))
                                                   (ps:chain (j-query this) (parents "form"))
                                                   (ps:LISP (session-name-string-pair))))
                                      :type "button" :name name :value title :class "submit btn btn-primary")))))
