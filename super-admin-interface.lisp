@@ -81,7 +81,14 @@
 
                                                                             (regenerate-model-classes)
                                                                             (mark-dirty grid))
-                                                                          "Save schema to file")))
+                                                                          "Save schema to file"))
+                                                                   (<li (render-link 
+                                                                          (lambda (&rest args)
+                                                                            (setf *current-schema* (read-schema))
+
+                                                                            (regenerate-model-classes)
+                                                                            (mark-dirty grid))
+                                                                          "Load schema from file")))
                                                                  (<h3 "Model Classes:")))))
                                           (make-instance 'composite :widgets (list action-links grid))) nil)
                                   (list "Models Fields"
