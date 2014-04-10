@@ -26,5 +26,7 @@
     #:make-tree-edit-for-model-description
     #:make-gridedit-for-model-description 
     #:bootstrap-typeahead-title 
-    #:def-additional-schema))
+    #:def-additional-schema 
+    #:*admin-menu-widgets*
+    #:weblocks-cms-admin-menu))
 

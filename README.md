@@ -68,7 +68,7 @@ Here is example of embedding generated models into your admin interface
            "Custom page" 
            (lambda(&rest args) ...)
            nil))
-       (weblocks-cms:models-gridedit-widgets-for-navigation)
+       (weblocks-cms:weblocks-cms-admin-menu)
        (list :navigation-class 'bootstrap-navbar-navigation))))
 ```
 
@@ -81,7 +81,7 @@ You can also use `(weblocks-cms:make-gridedit-for-model-description < model desc
 ### Tree Edit
 
 To make tree instead of grid you should add to your model column with name `parent` and type "Single Relation".
-In this case `(weblocks-cms:models-gridedit-widgets-for-navigation)` will create tree from such description instead of grid.
+In this case `(weblocks-cms:weblocks-cms-admin-menu)` will create tree from such description instead of grid.
 
 You can also use `(weblocks-cms:make-tree-edit-for-model-description < model description >)` to put tree where you want.
 

@@ -142,6 +142,17 @@
               #'make-gridedit-for-model-description) i)
           (string-downcase (getf i :name)))))
 
+(defvar *admin-menu-widgets* nil 
+  "Contains list of menu items, each menu item is either a list of title/widget/name for navigation or a callback which should return title/widget/name")
+
+(defun weblocks-cms-admin-menu ()
+  (append 
+    (models-gridedit-widgets-for-navigation)
+    (loop for i in *admin-menu-widgets* 
+          collect (if (functionp i)
+                    (funcall i)
+                    i))))
+
 (defun def-additional-schema (name schema)
                        (push (cons name schema) *additional-schemes*)
                        (mapcar #'generate-model-class-from-description schema))
