@@ -5,7 +5,7 @@
 
 (defun tree-item-children (cls)
   (let ((func)
-        (model-description (loop for i in *current-schema* 
+        (model-description (loop for i in (available-schemes-data) 
                                  if (equal 
                                       (keyword->symbol (getf i :name))
                                       cls)

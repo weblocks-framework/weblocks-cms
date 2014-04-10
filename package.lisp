@@ -14,7 +14,6 @@
     #:field-description 
     #:*upload-directory* 
     #:*models-package*
-    #:*current-schema
     #:regenerate-model-classes 
     #:read-schema 
     #:save-schema 
