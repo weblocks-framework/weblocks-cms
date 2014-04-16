@@ -131,3 +131,15 @@ There is also codemirror editor presentation. To make all presentations codemirr
     3. For relation with other model, not a tree, in this case you should write model name into "Type Data" textarea.
 
       `weblocks-cms:bootstrap-typeahead-title` method can be implemented for a normal appearance
+
+* Custom field      - used for quick customization of fields. Gives you possibility to create your own list of Weblocks view fields for field.
+ 
+For using it include dispatcher function symbol into "Type Data" textarea.
+
+*Dispatcher function* here will receive parameters 
+
+    * Type - `:form` or `:table`
+
+    * description - Weblocks CMS field description 
+
+    * model-description - Weblocks CMS model description 

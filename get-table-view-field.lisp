@@ -98,4 +98,7 @@
                     (list 
                       (keyword->symbol (getf description :name))
                       :hidep t
-                      :label (getf description :title))))))))
+                      :label (getf description :title)))))))
+  (:method ((type (eql :custom)) description model-description-list)
+   (destructuring-bind (package symbol) (mapcar #'string-upcase (ppcre:split ":+" (getf description :options)))
+     (funcall (intern symbol package) :table description model-description-list))))
