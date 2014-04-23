@@ -75,30 +75,36 @@
                        (strip-tags slot-val)
                        (prin1-to-string slot-val))))))))
   (:method ((type (eql :single-relation)) description model-description-list)
-           (let ((relation-model-description-list (get-model-description-from-field-description-options description)))
-             (cond 
-               (relation-model-description-list 
-                 (list 
-                   (list 
-                     (keyword->symbol (getf description :name))
-                     :label (getf description :title)
-                     :present-as 'text
-                     :reader (if (description-of-a-tree-p relation-model-description-list)
-                               (lambda (item)
-                                 (let ((item (slot-value item (keyword->symbol (getf description :name)))))
-                                   (and 
-                                     item
-                                     (tree-path-pretty-print item))))
-                               (lambda (item)
-                                 (let ((item (slot-value item (keyword->symbol (getf description :name)))))
-                                   (and 
-                                     item
-                                     (bootstrap-typeahead-title item))))))))
-               (t (list 
-                    (list 
-                      (keyword->symbol (getf description :name))
-                      :hidep t
-                      :label (getf description :title)))))))
+   (let ((relation-model-description-list (get-model-description-from-field-description-options description)))
+     (cond 
+       (relation-model-description-list 
+         (list 
+           (list 
+             (keyword->symbol (getf description :name))
+             :label (getf description :title)
+             :present-as 'text
+             :reader (if (description-of-a-tree-p relation-model-description-list)
+                       (lambda (item)
+                         (let ((item (slot-value item (keyword->symbol (getf description :name)))))
+                           (and 
+                             item
+                             (tree-path-pretty-print item))))
+                       (lambda (item)
+                         (let ((item (slot-value item (keyword->symbol (getf description :name)))))
+                           (and 
+                             item
+                             (bootstrap-typeahead-title item))))))))
+       (t (list 
+            (list 
+              (keyword->symbol (getf description :name))
+              :hidep t
+              :label (getf description :title)))))))
   (:method ((type (eql :custom)) description model-description-list)
-   (destructuring-bind (package symbol) (mapcar #'string-upcase (ppcre:split ":+" (getf description :options)))
-     (funcall (intern symbol package) :table description model-description-list))))
+   (let ((parts (ppcre:split ":+" (getf description :options))))
+     (if (equal (length parts) 2)
+       (destructuring-bind (package symbol) (mapcar #'string-upcase parts)
+         (funcall (intern symbol package) :form description model-description-list))
+       (list 
+         (list 
+           (keyword->symbol (getf description :name))
+           :hidep t))))))

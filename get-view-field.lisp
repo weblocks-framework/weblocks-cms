@@ -146,5 +146,11 @@
             :hidep t
             :label (getf description :title)))))))
   (:method ((type (eql :custom)) description model-description-list)
-   (destructuring-bind (package symbol) (mapcar #'string-upcase (ppcre:split ":+" (getf description :options)))
-     (funcall (intern symbol package) :form description model-description-list))))
+   (let ((parts (ppcre:split ":+" (getf description :options))))
+     (if (equal (length parts) 2)
+       (destructuring-bind (package symbol) (mapcar #'string-upcase parts)
+         (funcall (intern symbol package) :form description model-description-list))
+       (list 
+         (list 
+           (keyword->symbol (getf description :name))
+           :hidep t))))))
