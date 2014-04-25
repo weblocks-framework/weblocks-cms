@@ -16,7 +16,14 @@
 (defvar *additional-schemes* nil 
   "Additional schemes are not writen to schema file and used by Weblocks CMS plugins")
 
+(defmethod get-model-form-view-fields (model)
+  "Returns form view fields list for model. Model is a keyword"
+  (let ((description (get-model-description model)))
+    (loop for j in (getf description :fields) 
+          append (get-view-fields-for-field-description j description))))
+
 (defun get-model-form-view (model &key (display-buttons t))
+  "Returns form view for model. Model is a keyword. View is used in model grid."
   (let ((description (get-model-description model)))
     (eval 
       `(defview nil (:type form-with-refresh-button 
@@ -27,16 +34,21 @@
                            ,@(if display-buttons 
                                (list :buttons (quote '((:submit . "Save & Close") (:update . "Save & Edit") (:cancel . "Close Without Saving"))))
                                (list :buttons nil)))
-                ,@(loop for j in (getf description :fields) 
-                        append (get-view-fields-for-field-description j description))))))
+                ,@(get-model-form-view-fields model)))))
+
+(defmethod get-model-table-view-fields (obj)
+  "Returns table view fields list for model. Model is a keyword"
+  (let ((description (get-model-description obj)))
+    (loop for j in (getf description :fields) 
+          append (get-table-view-fields-for-field-description j description))))
 
 (defun get-model-table-view (model)
+  "Returns table view for model. Model is a keyword. View is used in model grid."
   (let ((description (get-model-description model)))
     (eval 
       `(defview nil (:type table 
                      :inherit-from ',(list :scaffold (keyword->symbol (getf description :name))))
-                ,@(loop for j in (getf description :fields) 
-                        append (get-table-view-fields-for-field-description j description))))))
+                ,@(get-model-table-view-fields model)))))
 
 (defun maybe-create-class-db-data (description)
   "Creates records for class and its fields information if it does not exist"

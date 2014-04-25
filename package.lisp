@@ -28,5 +28,8 @@
     #:bootstrap-typeahead-title 
     #:def-additional-schema 
     #:*admin-menu-widgets*
-    #:weblocks-cms-admin-menu))
+    #:weblocks-cms-admin-menu 
+    #:get-model-form-view-fields
+    #:get-model-table-view-fields
+    ))
 
