@@ -34,7 +34,20 @@
   `(yaclml:with-yaclml-stream *weblocks-output-stream*
      ,@body))
 
+(defmacro def-simple-tag-with-any-attributes (name)
+  "Convience macro for defing tags which accept any kind of attribute
+   and just wrap the body in an xml tag."
+  `(yaclml:deftag ,name (&allow-other-attributes other-attributes &body body)
+     (progn
+       (yaclml:emit-open-tag ,(string-downcase (string name)) other-attributes)
+       (yaclml:emit-body body)
+       (yaclml:emit-close-tag ,(string-downcase (string name))))))
+
 (defmacro allow-any-attributes-for-tag (tag)
+  `(eval-when (:compile-toplevel :load-toplevel :execute)
+     (def-simple-tag-with-any-attributes ,tag)))
+
+(defmacro allow-any-attributes-for-self-closing-tag (tag)
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      (yaclml::def-simple-xtag ,tag)))
 
