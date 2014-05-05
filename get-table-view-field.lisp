@@ -103,7 +103,7 @@
    (let ((parts (ppcre:split ":+" (getf description :options))))
      (if (equal (length parts) 2)
        (destructuring-bind (package symbol) (mapcar #'string-upcase parts)
-         (funcall (intern symbol package) :form description model-description-list))
+         (funcall (intern symbol package) :table description model-description-list))
        (list 
          (list 
            (keyword->symbol (getf description :name))
