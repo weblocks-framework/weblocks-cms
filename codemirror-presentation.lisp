@@ -4,6 +4,10 @@
   ()
   (:documentation "A presentation to turn textarea into code editor"))
 
+(defparameter *codemirror-css* 
+  '(ps:create "border" "1px solid #cccccc" 
+              "border-radius" "4px"))
+
 (defmethod render-view-field-value :around (value (presentation codemirror-presentation) 
                                                   (field form-view-field) (view form-view) widget obj
                                                   &rest args)
@@ -33,6 +37,10 @@
                                      (ps:create 
                                        :mode "mustache"
                                        "lineWrapping" t))))
+
+                       (ps:chain (j-query (ps:@ editor display wrapper))
+                                 (css (ps:LISP *codemirror-css*)))
+
                        (ps:chain 
                          editor 
                          (on "change"
