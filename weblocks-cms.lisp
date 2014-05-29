@@ -166,5 +166,10 @@
                     i))))
 
 (defun def-additional-schema (name schema)
-                       (push (cons name schema) *additional-schemes*)
-                       (mapcar #'generate-model-class-from-description schema))
+  (setf *additional-schemes* 
+        (remove-if 
+          (lambda (item)
+            (equal (car item) name))
+          *additional-schemes*))
+  (push (cons name schema) *additional-schemes*)
+  (mapcar #'generate-model-class-from-description schema))
