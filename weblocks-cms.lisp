@@ -144,14 +144,18 @@
                 (equal (getf i :type) :single-relation))
           (return-from description-of-a-tree-p t))))
 
+(defmethod make-widget-for-model-description (name description)
+  (funcall 
+    (if (description-of-a-tree-p description)
+      #'make-tree-edit-for-model-description
+      #'make-gridedit-for-model-description) description))
+
 (defun models-gridedit-widgets-for-navigation ()
   (loop for i in (available-schemes-data) collect 
         (list 
           (getf i :title)
-          (funcall 
-            (if (description-of-a-tree-p i)
-              #'make-tree-edit-for-model-description
-              #'make-gridedit-for-model-description) i)
+          (make-widget-for-model-description (getf i :name) i)
+          
           (string-downcase (getf i :name)))))
 
 (defvar *admin-menu-widgets* nil 
