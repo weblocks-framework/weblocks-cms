@@ -31,5 +31,5 @@
     #:weblocks-cms-admin-menu 
     #:get-model-form-view-fields
     #:get-model-table-view-fields
-    ))
+    #:make-widget-for-model-description))
 
