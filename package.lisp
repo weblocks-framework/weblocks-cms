@@ -13,7 +13,6 @@
     #:model-description 
     #:field-description 
     #:*upload-directory* 
-    #:*models-package*
     #:regenerate-model-classes 
     #:read-schema 
     #:save-schema 
@@ -31,5 +30,6 @@
     #:weblocks-cms-admin-menu 
     #:get-model-form-view-fields
     #:get-model-table-view-fields
-    #:make-widget-for-model-description))
+    #:make-widget-for-model-description
+    #:import-model-symbols))
 

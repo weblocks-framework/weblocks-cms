@@ -177,3 +177,6 @@
           *additional-schemes*))
   (push (cons name schema) *additional-schemes*)
   (mapcar #'generate-model-class-from-description schema))
+
+(defun import-model-symbols (template)
+  (import (intern (string-upcase template) "WEBLOCKS-CMS") *package*))
