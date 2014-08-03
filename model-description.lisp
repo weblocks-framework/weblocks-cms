@@ -1,10 +1,5 @@
 (in-package :weblocks-cms)
 
-(defclass model-description ()
-  ((id)
-   (title :initarg :title :accessor model-description-title)
-   (name  :initarg :name :accessor model-description-name :type keyword)))
-
 (defun string<-by-chars (str1 str2)
   (cond 
     ((or 
@@ -19,7 +14,7 @@
 (assert (equal '("2" "") (sort (list "" "2" ) #'string<-by-chars)))
 (assert (equal '("Test2" "Test") (sort (list "Test" "Test2" ) #'string<-by-chars)))
 
-(defmethod dump-model-description ((model model-description))
+(defun dump-model-description (model)
   (list :title (model-description-title model)
         :name (model-description-name model)
         :fields 

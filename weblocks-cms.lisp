@@ -71,8 +71,7 @@
                                     :model model-descr)))))
     (warn "Description db data not generated for class ~A, store is not yet opened" (getf description :name))))
 
-(defun generate-model-class-from-description (i)
-  "Creates CLOS class by schema class description list"
+(defmethod model-class-from-description (store-type i)
   (eval
     `(defclass ,(keyword->symbol (getf i :name)) ()
        ((,(keyword->symbol :id))
@@ -85,15 +84,63 @@
                     :initform nil
                     :accessor (intern (string-upcase (format nil "~A-~A" (getf i :name)  (getf j :name))) *models-package*))
                   (cond 
-                    ((find (getf i :type) (list :string :integer))
+                    ((find (getf j :type) (list :string :integer))
                      (list :type (getf j :type)))
                     (t nil))))))))
+
+(defmethod model-class-from-description ((store-type (eql :perec)) i)
+  (eval
+    `(hu.dwim.perec:defpclass ,(keyword->symbol (getf i :name)) ()
+       (,@(loop for j in (getf i :fields) collect 
+                (append 
+                  (list 
+                    (keyword->symbol (getf j :name))
+
+                    :initarg (alexandria:make-keyword (string-upcase (getf j :name)))
+                    :initform nil
+                    :accessor (intern (string-upcase (format nil "~A-~A" (getf i :name)  (getf j :name))) *models-package*))
+                  (cond 
+                    ((find (getf j :type) (list :string :integer))
+                     (list :type `(or 
+                                    null 
+                                    ,(intern (string-upcase (getf j :type))
+                                             (find-package :hu.dwim.perec)))))
+                    ((equal (getf j :type) :textarea)
+                     (list :type `(or 
+                                    null
+                                    (intern 
+                                      "TEXT"
+                                      (find-package :hu.dwim.perec)))))
+                    (t (list :type `(or 
+                                      null
+                                      ,(intern 
+                                         "SERIALIZED" 
+                                         (find-package :hu.dwim.perec))))))))))))
+
+(defvar *store-type* nil)
+
+(defun generate-model-class-from-description (i)
+  "Creates CLOS class by schema class description list"
+  (model-class-from-description *store-type* i))
 
 (defun available-schemes-data (&optional (schema *current-schema*))
   (apply #'append (list* schema (mapcar #'cdr *additional-schemes*))))
 
 (defun regenerate-model-classes (&optional (schema *current-schema*))
   "Transforms schema description to classes"
+
+  (generate-model-class-from-description 
+    '(:TITLE "Doesn't matter" :NAME :MODEL-DESCRIPTION 
+      :FIELDS ((:TITLE "Doesn't matter" :NAME :NAME :TYPE :CUSTOM :OPTIONS NIL)
+               (:TITLE "Doesn't matter" :NAME :TITLE :TYPE :CUSTOM :OPTIONS NIL))))
+  (generate-model-class-from-description 
+    '(:TITLE "Doesn't matter" :NAME :FIELD-DESCRIPTION 
+      :FIELDS ((:TITLE "Doesn't matter" :NAME :NAME :TYPE :CUSTOM :OPTIONS NIL)
+               (:TITLE "Doesn't matter" :NAME :TITLE :TYPE :CUSTOM :OPTIONS NIL)
+               (:TITLE "Doesn't matter" :NAME :TYPE :TYPE :CUSTOM :OPTIONS NIL)
+               (:TITLE "Doesn't matter" :NAME :TYPE-DATA :TYPE :CUSTOM :OPTIONS NIL)
+               (:TITLE "Doesn't matter" :NAME :MODEL :TYPE :SINGLE-CHOICE :OPTIONS NIL))))
+
   (loop for i in (available-schemes-data schema) do
         (generate-model-class-from-description i)
         (maybe-create-class-db-data i)))
