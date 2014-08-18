@@ -85,12 +85,12 @@
                     :accessor (intern (string-upcase (format nil "~A-~A" (getf i :name)  (getf j :name))) *models-package*))
                   (cond 
                     ((find (getf j :type) (list :string :integer))
-                     (list :type (getf j :type)))
+                     (list :type (intern (string-upcase (getf j :type)))))
                     (t nil))))))))
 
 (defmethod model-class-from-description ((store-type (eql :perec)) i)
   (eval
-    `(hu.dwim.perec:defpclass ,(keyword->symbol (getf i :name)) ()
+    `(,(intern "DEFPCLASS" :hu.dwim.perec) ,(keyword->symbol (getf i :name)) ()
        (,@(loop for j in (getf i :fields) collect 
                 (append 
                   (list 
