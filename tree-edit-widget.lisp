@@ -1,7 +1,12 @@
 (in-package :weblocks-cms)
 
 (defwidget tree-edit (tree-widget)
-  ())
+  ()
+  (:default-initargs 
+    :allow-pagination-p nil 
+    :allow-delete-p nil 
+    :allow-select-p nil 
+    :allow-operations-p t))
 
 (defun tree-item-children (cls)
   (let ((func)
