@@ -1,5 +1,10 @@
 (in-package :weblocks-cms)
 
+(defmacro with-yaclml (&body body)
+  "A wrapper around cl-yaclml with-yaclml-stream macro."
+  `(yaclml:with-yaclml-stream *weblocks-output-stream*
+     ,@body))
+
 (defwidget popover-gridedit(gridedit)
            ())
 
@@ -89,4 +94,56 @@
     (call-next-method)
     (do-widget grid (dataedit-item-widget grid))
     (dataedit-reset-state grid)))
+
+(defmethod widget-translation-table append ((obj (eql 'popover-gridedit)) &rest args)
+  `((:edit-button-caption . ,(translate "Edit"))))
+
+(defmethod widget-translation-table append ((obj popover-gridedit) &rest args)
+  (widget-translation-table 'popover-gridedit))
+
+(defun grid-with-edit-button-row-wt (&key row-class prefix suffix row-action session-string content alternp drilled-down-p move-up-action move-down-action display-up-action display-down-action &allow-other-keys )
+  (yaclml:with-yaclml-output-to-string
+    (<:as-is prefix)
+    (<tr :class (format nil "~A~A" row-class (if drilled-down-p " info" ""))
+         (<:as-is content))
+    (<:as-is suffix)))
+
+(defun grid-with-edit-button-context-p (&key widget &allow-other-keys)
+  (if (typep widget 'popover-gridedit)
+    50
+    0))
+
+(weblocks-util:deftemplate :datagrid-table-view-body-row-wt 'grid-with-edit-button-row-wt 
+                           :application-class 'twitter-bootstrap-webapp 
+                           :context-matches 'grid-with-edit-button-context-p)
+
+(defun grid-with-edit-button-header-row-wt (&key suffix content prefix)
+  (with-html-to-string
+    (str suffix)
+    (:tr (str content))
+    (str prefix)))
+
+(weblocks-util:deftemplate :table-header-row-wt 
+                           'grid-with-edit-button-header-row-wt 
+                           :application-class 'twitter-bootstrap-webapp 
+                           :context-matches 'grid-with-edit-button-context-p)
+
+(defmethod render-view-field ((field datagrid-drilldown-field) (view table-view)
+                                                               (widget popover-gridedit) presentation value obj &rest args
+                                                               &key row-action &allow-other-keys)
+  (declare (ignore args))
+  (with-yaclml
+    (<td 
+      (<div :class "btn-group"
+            (<a :class "btn btn-small btn-info" :href "javascript:;" :onclick (format nil "initiateAction(\"~A\", \"~A\");" row-action (session-name-string-pair))
+                (<i :class "icon-pencil")
+                (<:as-is "&nbsp;") 
+                (<:as-is (widget-translate 'popover-gridedit :edit-button-caption))
+                )))))
+
+(defmethod render-view-field-header ((field datagrid-drilldown-field) (view table-view)
+                                     (widget popover-gridedit) presentation value obj &rest args)
+  (declare (ignore args))
+  (with-html (:th 
+                  "")))
 

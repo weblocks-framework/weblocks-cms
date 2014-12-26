@@ -33,11 +33,6 @@
   "Override this function for using login logic"
   t)
 
-(defmacro with-yaclml (&body body)
-  "A wrapper around cl-yaclml with-yaclml-stream macro."
-  `(yaclml:with-yaclml-stream *weblocks-output-stream*
-     ,@body))
-
 (defmacro def-simple-tag-with-any-attributes (name)
   "Convience macro for defing tags which accept any kind of attribute
    and just wrap the body in an xml tag."
