@@ -49,9 +49,22 @@
                                                   (ps:LISP 
                                                     (function-or-action->action 
                                                       (lambda (&rest args)
-                                                        (send-script 
-                                                          (ps:ps (alert "Saved successfully")))
-                                                        (update-object-view-from-request (dataform-data widget) view))))
+                                                        (multiple-value-bind (success errors)
+                                                          (apply #'update-object-view-from-request 
+                                                                 (dataform-data widget) view 
+                                                                 :class-store (dataform-class-store widget)
+                                                                 args)
+                                                          (mark-dirty widget :propagate t)
+                                                          (if success 
+                                                            (progn 
+                                                              (setf (slot-value widget 'weblocks::validation-errors) errors)
+                                                              (send-script 
+                                                                (ps:ps (alert "Saved successfully"))))
+                                                            (progn 
+                                                              (setf (slot-value widget 'weblocks::validation-errors) errors)
+                                                              (setf (slot-value widget 'weblocks::intermediate-form-values)
+                                                                    (apply #'request-parameters-for-object-view
+                                                                           view (dataform-data widget) args))))))))
                                                   (ps:chain (j-query this) (parents "form"))
                                                   (ps:LISP (session-name-string-pair))))
                                      :type "button" :name name :value title :class "submit btn btn-primary")))))
