@@ -8,7 +8,8 @@
                   (title :requiredp t)
                   (name :requiredp t 
                         :reader (lambda (item)
-                                  (string-downcase (slot-value item 'name)))
+                                  (when (slot-value item 'name)
+                                    (string-downcase (slot-value item 'name))))
                         :writer (lambda (value item)
                                   (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value)))))
                   (type :present-as (radio :choices '(("Choice yes/no" . boolean)
@@ -70,12 +71,14 @@
                                                                       (name :present-as text 
                                                                             :allow-sorting-p t
                                                                             :reader (lambda (item)
-                                                                                      (string-downcase (model-description-name item)))))
+                                                                                      (when (model-description-name item)
+                                                                                        (string-downcase (model-description-name item))))))
                                                        :item-form-view 
                                                        (defview nil (:type form :inherit-from '(:scaffold model-description))
                                                                 (name :requiredp t 
                                                                       :reader (lambda (item)
-                                                                                (string-downcase (slot-value item 'name)))
+                                                                                (when (slot-value item 'name)
+                                                                                  (string-downcase (slot-value item 'name))))
                                                                       :writer (lambda (value item)
                                                                                 (setf (slot-value item 'name) (alexandria:make-keyword (string-upcase value))))))))
                                                (action-links (lambda (&rest args)
