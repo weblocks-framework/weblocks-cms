@@ -6,6 +6,7 @@
   :license "LLGPL"
   :version (:read-from-file "version.lisp-expr")
   :depends-on (#:weblocks
+               #:weblocks-prototype-js
                #:weblocks-stores
                #:weblocks-utils 
                #:weblocks-twitter-bootstrap-application 
