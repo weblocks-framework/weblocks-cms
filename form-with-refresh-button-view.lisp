@@ -27,7 +27,7 @@
                                unless (find (car (weblocks::ensure-list i)) (list :submit :cancel))
                                collect (weblocks::ensure-list i))))
       (write-string 
-        (weblocks::render-template-to-string 
+        (weblocks::render-wt-to-string 
           :form-view-buttons-wt
           (list :view view :object obj :widget widget)
           :submit-html (let ((submit submit))
