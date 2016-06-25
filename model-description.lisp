@@ -18,10 +18,7 @@
   (list :title (model-description-title model)
         :name (model-description-name model)
         :fields 
-        (loop for i in (sort 
-                         (find-by-values 'field-description :model model)
-                         #'string<-by-chars
-                         :key #'field-description-title)
+        (loop for i in (find-by-values 'field-description :model model)
               collect (dump-field-description i))))
 
 (defvar *schema-file* (merge-pathnames 
