@@ -11,7 +11,7 @@
            :subclasses (weblocks-twitter-bootstrap-application:twitter-bootstrap-webapp)
            :autostart nil                   ;; have to start the app manually
            :ignore-default-dependencies nil ;; accept the defaults
-           :js-backend :prototype
+           :js-backend :jquery
            :debug t)
 
 (defvar *additional-schemes* nil 
