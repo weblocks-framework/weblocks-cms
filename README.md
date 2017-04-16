@@ -143,3 +143,18 @@ For using it include dispatcher function symbol into "Type Data" textarea.
     * description - Weblocks CMS field description 
 
     * model-description - Weblocks CMS model description 
+
+And it should return list of result fields specifications. Similar field specifications used during defview.
+
+Here is example of such specification
+
+```lisp
+  (list 
+    'weblocks-cms::value ; Field symbol
+    :label "Value"
+    :present-as 'text
+    :reader (if (some-condition) #'some-reader-1 #'some-reader-2))
+```
+
+We recommend naming dispatcher `<model-name>-<model-field-name>-cfd`. Here cfd means "custom field dispatcher".
+For model Element with field Value it should be `element-value-cfd`.
