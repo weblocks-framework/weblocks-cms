@@ -23,7 +23,7 @@
      (list 
        (keyword->symbol (getf description :name))
        :label (getf description :title)
-       :present-as 'date)))
+       :present-as '(date :format "%Y-%m-%d %H:%M:%S"))))
   (:method ((type (eql :multiple-choices)) description model-description-list)
    (list 
      (list 

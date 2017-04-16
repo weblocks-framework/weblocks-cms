@@ -11,7 +11,7 @@
            :subclasses (weblocks-twitter-bootstrap-application:twitter-bootstrap-webapp)
            :autostart nil                   ;; have to start the app manually
            :ignore-default-dependencies nil ;; accept the defaults
-           :js-backend :prototype
+           :js-backend :jquery
            :debug t)
 
 (defvar *additional-schemes* nil 
@@ -68,7 +68,7 @@
                                     :name (getf i :name)
                                     :title (getf i :title)
                                     :type (getf i :type)
-                                    :type-data (getf i :type-data)
+                                    :type-data (or (getf i :type-data) (getf i :options))
                                     :model model-descr)))))
     (warn "Description db data not generated for class ~A, store is not yet opened" (getf description :name))))
 

@@ -128,18 +128,41 @@
                            :application-class 'twitter-bootstrap-webapp 
                            :context-matches 'grid-with-edit-button-context-p)
 
+(defun grid-with-edit-button-header-row-wt (&key suffix content prefix)
+  (with-html-to-string
+    (str suffix)
+    (:tr (str content))
+    (str prefix)))
+
+(weblocks-util:deftemplate :table-header-row-wt 
+                           'grid-with-edit-button-header-row-wt 
+                           :application-class 'twitter-bootstrap-webapp 
+                           :context-matches 'grid-with-edit-button-context-p)
+
+(defun grid-with-edit-button-buttons-cell-wt (&key content)
+  (yaclml:with-yaclml-output-to-string
+    (<td (<:as-is content))))
+
+(weblocks-util:deftemplate :table-buttons-cell-wt 
+                           'grid-with-edit-button-buttons-cell-wt 
+                           :application-class 'twitter-bootstrap-webapp 
+                           :context-matches 'grid-with-edit-button-context-p)
+
+
 (defmethod render-view-field ((field datagrid-drilldown-field) (view table-view)
                                                                (widget popover-gridedit) presentation value obj &rest args
                                                                &key row-action &allow-other-keys)
   (declare (ignore args))
-  (with-yaclml
-    (<td 
-      (<div :class "btn-group"
-            (<a :class "btn btn-small btn-info" :href "javascript:;" :onclick (format nil "initiateAction(\"~A\", \"~A\");" row-action (session-name-string-pair))
-                (<i :class "icon-pencil")
-                (<:as-is "&nbsp;") 
-                (<:as-is (widget-translate 'popover-gridedit :edit-button-caption))
-                )))))
+
+  (weblocks-util:render-wt 
+    :table-buttons-cell-wt
+    (list :view view :field field :widget widget :presentation presentation :value value :object obj)
+    :content (yaclml:with-yaclml-output-to-string 
+               (<div :class "btn-group"
+                     (<a :class "btn btn-small btn-info" :href "javascript:;" :onclick (format nil "initiateAction(\"~A\", \"~A\");" row-action (session-name-string-pair))
+                         (<i :class "icon-pencil")
+                         (<:as-is "&nbsp;") 
+                         (<:as-is (widget-translate 'popover-gridedit :edit-button-caption)))))))
 
 (defmethod render-view-field-header ((field datagrid-drilldown-field) (view table-view)
                                      (widget popover-gridedit) presentation value obj &rest args)
