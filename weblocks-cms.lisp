@@ -156,12 +156,26 @@
 (defun get-table-view-fields-for-field-description (i model-description-list)
   (get-table-view-fields-for-field-type-and-description (getf i :type) i model-description-list))
 
-(defun make-gridedit-for-model-description (i)
-  (make-instance 
-    'popover-gridedit 
-    :data-class (keyword->symbol (getf i :name))
-    :item-form-view (get-model-form-view (getf i :name))
-    :view (get-model-table-view (getf i :name))))
+(defun make-gridedit-page-for-model-description (i)
+  (let* ((grid (make-instance 
+                 'popover-gridedit 
+                 :data-class (keyword->symbol (getf i :name))
+                 :item-form-view (get-model-form-view (getf i :name))
+                 :view (get-model-table-view (getf i :name))))
+         (filtering-widget (when 
+                             (find-package 'weblocks-filtering-widget)
+                             (make-instance 
+                               (intern "FILTERING-WIDGET" "WEBLOCKS-FILTERING-WIDGET") 
+                               :dataseq-instance grid
+                               :filter-form-visible nil
+                               :form-fields (funcall (symbol-function (intern "ALL-FILTERS-FOR-MODEL" "WEBLOCKS-FILTERING-WIDGET")) (keyword->symbol (getf i :name)))))))
+
+    (when (find-package 'weblocks-filtering-widget)
+      (funcall (symbol-function (intern "HIDE-FILTER-FORM" "WEBLOCKS-FILTERING-WIDGET")) filtering-widget))
+
+    (make-instance 
+      'weblocks:composite
+      :widgets (remove-if #'null (list filtering-widget grid)))))
 
 (defun make-tree-edit-for-model-description (i)
   (let* ((model-class (keyword->symbol (getf i :name)))
@@ -196,7 +210,7 @@
   (funcall 
     (if (description-of-a-tree-p description)
       #'make-tree-edit-for-model-description
-      #'make-gridedit-for-model-description) description))
+      #'make-gridedit-page-for-model-description) description))
 
 (defun models-gridedit-widgets-for-navigation ()
   (loop for i in (available-schemes-data) collect 
